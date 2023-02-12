@@ -186,4 +186,4 @@ npm install rollup -D
 
 Change the `"name"` in package-lock.json (2 places) and package.json (1 place).  
 From: `"cli-upgrade"`  
-To: `"@0bdx/cli-code"`
+To: `"@0bdx/cli-core"`

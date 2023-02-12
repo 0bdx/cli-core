@@ -1,5 +1,5 @@
 {
-  "name": "@0bdx/cli-code",
+  "name": "@0bdx/cli-core",
   "version": "0.0.1",
   "description": "Common helpers for the 0bdx command line utilities.",
   "type": "module",
