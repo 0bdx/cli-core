@@ -25,8 +25,8 @@
     "url": "git+https://github.com/0bdx/cli-core.git"
   },
   "keywords": [
-    "init",
-    "initialise"
+    "cli",
+    "utilities"
   ],
   "author": "0bdx <0@0bdx.com> (0bdx.com)",
   "license": "MIT",

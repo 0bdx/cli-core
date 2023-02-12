@@ -107,7 +107,7 @@ touch cli-core.d.ts cli-core.js
 ```sh
 npm init --yes
 sed -ix 's/: "1.0.0",/: "0.0.1",/' *e.json
-sed -ix 's/keywords": \[/keywords": [ "init", "initialise" /' *e.json
+sed -ix 's/keywords": \[/keywords": [ "cli", "utilities" /' *e.json
 sed -ix 's/: "ISC",/: "MIT",/' *e.json
 A=(§{1..3},\\n·);sed -ix "s/\"main/${A[*]}·\"main/;s/·/ /g" *e.json
 A=(§{a..f},\\n···);sed -ix "s/\"test/${A[*]}·\"test/;s/·/ /g" *e.json
@@ -139,7 +139,7 @@ npm install rollup -D
 2. Change the version to 0.0.1:  
    `sed -ix 's/: "1.0.0",/: "0.0.1",/' *e.json`
 3. Add keywords, for better [npmjs.org](http://npmjs.org) searchability:  
-   `sed -ix 's/keywords": \[/keywords": [ "init", "initialise" /' *e.json`
+   `sed -ix 's/keywords": \[/keywords": [ "cli", "utilities" /' *e.json`
 4. Change the license to MIT:  
    `sed -ix 's/: "ISC",/: "MIT",/' *e.json`
 5. Insert four top-level placeholder properties before `"main"`, and then  

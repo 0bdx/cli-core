@@ -1,10 +1,4 @@
 /**
- * https://www.npmjs.com/package/@0bdx/cli-core
- * @version 0.0.1
- * @license Copyright (c) 2023 0bdx <0@0bdx.com> (0bdx.com)
- * SPDX-License-Identifier: MIT
- */
-/**
  * Checks whether the environment has a writable temporary-items directory.
  *
  * @param  {import('node:os').tmpdir} tmpdir
@@ -25,7 +19,7 @@
  *     Throws an `Error` if any of the arguments are invalid, or if the
  *     passed-in functions throw an error.
  */
-function checkTmpDirectory(
+export default function checkTmpDirectory(
     tmpdir,
     join,
     mkdtempSync,
@@ -80,32 +74,3 @@ function checkTmpDirectory(
 
     return '';
 }
-
-// import { tmpdir } from 'os';
-// import { join } from 'path';
-// import { mkdtempSync, rmSync } from 'fs';
-
-// import checkTmpDirectory from './check-tmp-directory.js';
-
-/**
- * Common helpers for the 0bdx command line utilities.
- *
- * @return  {string}
- *     Returns "cliCore()" [TODO change this]
- */
-function cliCore() {
-
-    // checkTmpDirectory(
-    //     tmpdir,
-    //     join,
-    //     mkdtempSync,
-    //     // rmSync,
-    //     () => { throw Error('yikes') },
-    // );
-
-    // console.log('cliCore() ok', tmpdir());
-    return 'cliCore()';
-}
-// cliCore();
-
-export { checkTmpDirectory, cliCore };
