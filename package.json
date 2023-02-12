@@ -1,0 +1,43 @@
+{
+  "name": "@0bdx/cli-code",
+  "version": "0.0.1",
+  "description": "Common helpers for the 0bdx command line utilities.",
+  "type": "module",
+  "files": [
+    "cli-core.d.ts",
+    "cli-core.js"
+  ],
+  "engines": {
+    "node": ">= 14.0.0"
+  },
+  "main": "cli-core.js",
+  "scripts": {
+    "build:prod": "rollup -c",
+    "build:types": "tsc cli-core.js --allowJs --declaration --emitDeclarationOnly",
+    "build": "for s in {prod,types};do npm run build:$s;done",
+    "preflight:test": "echo \"🧬 test.js\" && node test.js",
+    "preflight:types": "tsc cli-core.js --allowJs --checkJs --noEmit",
+    "preflight": "for s in {test,types};do npm run preflight:$s;done",
+    "test": "echo \"🧪 src/test.js\" && node src/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/0bdx/cli-core.git"
+  },
+  "keywords": [
+    "init",
+    "initialise"
+  ],
+  "author": "0bdx <0@0bdx.com> (0bdx.com)",
+  "license": "MIT",
+  "types": "./cli-core.d.ts",
+  "bugs": {
+    "url": "https://github.com/0bdx/cli-core/issues"
+  },
+  "homepage": "https://github.com/0bdx/cli-core#readme",
+  "devDependencies": {
+    "@0bdx/build-helpers": "^0.0.4",
+    "@types/node": "^18.13.0",
+    "rollup": "^3.15.0"
+  }
+}
