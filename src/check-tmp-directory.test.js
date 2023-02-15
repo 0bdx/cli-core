@@ -11,63 +11,73 @@ import throws from './private-methods/throws.js';
 export default function checkTmpDirectoryTest(f) {
     const ep = 'Error: checkTmpDirectory():'; // error prefix
 
-    // Mock functions.
-    const mockTmpdir = () => '/path/to/tmpdir';
-    /** @type {import('node:path').join} */
-    const mockJoin = (...paths) => paths.join('/');
-    /** @type {import('node:fs').mkdtempSync} */
-    // @ts-expect-error
-    const mockMkdtempSync = (path='') => `${path}a1b2c3`;
-    /** @type {import('node:fs').rmSync} */
-    const rmDir = (_path) => void 0;
+    // Mock filesysToolkit.
+    /** @type {import('./check-tmp-directory').FilesysToolkit} */
+    const ft = {
+        join: (...paths) => paths.join('/'),
+        // @ts-expect-error
+        mkdtempSync: (prefix='') => `${prefix}a1b2c3`,
+        rmSync: () => void 0,
+        tmpdir: () => '/path/to/tmpdir',
+    }
 
-    // `tmpdir` causes an exception.
+    // `filesysToolkit` is invalid.
+    throws(()=>f(null),
+        `${ep} filesysToolkit is null`);
     // @ts-expect-error
     throws(()=>f(),
-        `${ep} tmpdir is type 'undefined' not 'function'`);
-    throws(()=>f(() => { throw Error('Oops!') }, mockJoin, mockMkdtempSync, rmDir),
-        `${ep} tmpdir(): Error: Oops!`);
+        `${ep} filesysToolkit is type 'undefined' not 'object'`);
     // @ts-expect-error
-    throws(()=>f(() => 123, mockJoin, mockMkdtempSync, rmDir),
-        `${ep} tmpdir(): Error: Returned type 'number' not 'string'`);
+    throws(()=>f({}),
+        `${ep} 0 not 4 props in filesysToolkit`);
+    // @ts-expect-error
+    throws(()=>f({ ...ft, extraFunction:()=>{} }),
+        `${ep} 5 not 4 props in filesysToolkit`);
 
     // `join` causes an exception.
-    // @ts-expect-error
-    throws(()=>f(mockTmpdir),
+    throws(()=>f({ ...ft, join:undefined }),
         `${ep} join is type 'undefined' not 'function'`);
-    throws(()=>f(mockTmpdir, () => { throw Error('Nope') }, mockMkdtempSync, rmDir),
-        `${ep} join(): Error: Nope`);
+    throws(()=>f({ ...ft, join:() => { throw Error('Nope!') } }),
+        `${ep} join(): Error: Nope!`);
     // @ts-expect-error
-    throws(()=>f(mockTmpdir, () => true, mockMkdtempSync, rmDir),
+    throws(()=>f({ ...ft, join:() => true }),
         `${ep} join(): Error: Returned type 'boolean' not 'string'`);
 
     // `mkdtempSync` causes an exception.
-    // @ts-expect-error
-    throws(()=>f(mockTmpdir, mockJoin),
+    throws(()=>f({ ...ft, mkdtempSync:undefined }),
         `${ep} mkdtempSync is type 'undefined' not 'function'`);
-    throws(()=>f(mockTmpdir, mockJoin, () => { throw Error('err') }, rmDir),
+    throws(()=>f({ ...ft, mkdtempSync:() => { throw Error('err') } }),
         `${ep} mkdtempSync(): Error: err`);
     // @ts-expect-error
-    throws(()=>f(mockTmpdir, mockJoin, () => [], rmDir),
+    throws(()=>f({ ...ft, mkdtempSync:() => [] }),
         `${ep} mkdtempSync(): Error: Returned type 'object' not 'string'`);
 
     // `rmSync` causes an exception.
     // @ts-expect-error
-    throws(()=>f(mockTmpdir, mockJoin, mockMkdtempSync),
-        `${ep} rmSync is type 'undefined' not 'function'`);
-    throws(()=>f(mockTmpdir, mockJoin, mockMkdtempSync, () => { throw Error('!') }),
+    throws(()=>f({ ...ft, rmSync:123 }),
+        `${ep} rmSync is type 'number' not 'function'`);
+    throws(()=>f({ ...ft, rmSync:() => { throw Error('!') } }),
         `${ep} rmSync():
     An error has occurred while removing the temporary folder
     '/path/to/tmpdir/0bdx-cli-core-a1b2c3'
     Please remove it manually.
     Error: !`);
-    throws(()=>f(mockTmpdir, mockJoin, mockMkdtempSync, () => 'no'),
+    throws(()=>f({ ...ft, rmSync:() => 'no!' }),
         `${ep} rmSync():
     An error has occurred while removing the temporary folder
     '/path/to/tmpdir/0bdx-cli-core-a1b2c3'
     Please remove it manually.
     Error: Returned type 'string' not 'undefined'`);
 
+    // `tmpdir` causes an exception.
+    throws(()=>f({ ...ft, tmpdir:undefined }),
+        `${ep} tmpdir is type 'undefined' not 'function'`);
+    throws(()=>f({ ...ft, tmpdir:() => { throw Error('Oops!') } }),
+        `${ep} tmpdir(): Error: Oops!`);
+    // @ts-expect-error
+    throws(()=>f({ ...ft, tmpdir:() => 123 }),
+        `${ep} tmpdir(): Error: Returned type 'number' not 'string'`);
+
     // Ok.
-    equal(f(mockTmpdir, mockJoin, mockMkdtempSync, rmDir), '');
+    equal(f(ft), void 0);
 }

@@ -1,32 +1,37 @@
 /**
  * Checks whether the environment has a writable temporary-items directory.
  *
- * @param  {import('node:os').tmpdir} tmpdir
+ * @typedef {Object} FilesysToolkit
+ * @property {import('node:os').tmpdir} tmpdir
  *     A function which returns the path to the OS's default temporary-items
  *     directory, as a string
- * @param  {import('node:path').join} join
+ * @property {import('node:path').join} join
  *     A function which joins path-fragments together, normalize the resulting
  *     path, and returns it as a string
- * @param  {import('node:fs').mkdtempSync} mkdtempSync
+ * @property {import('node:fs').mkdtempSync} mkdtempSync
  *     A function which creates a uniquely-named directory, by appending six
- *     random characters to the passed-in filename.
- * @param  {import('node:fs').rmSync} rmSync
- *     A function which creates a directory.
- * @return  {string}
- *     Returns an empty string if the current environment has a writable
- *     temporary-items directory, or else returns a message explaining the fault
+ *     random characters to the passed-in filename
+ * @property {import('node:fs').rmSync} rmSync
+ *     A function which creates a directory
+ * 
+ * @param {FilesysToolkit} filesysToolkit
+ *     An object containing functions which can read and write to a filesystem
+ * @return {void}
+ *     Does not return anything
  * @throws
  *     Throws an `Error` if any of the arguments are invalid, or if the
  *     passed-in functions throw an error.
  */
-export default function checkTmpDirectory(
-    tmpdir,
-    join,
-    mkdtempSync,
-    rmSync,
-) {
-    // Validate the arguments.
+export default function checkTmpDirectory(filesysToolkit) {
+    // Validate the filesysToolkit argument.
     const ep = 'Error: checkTmpDirectory():'; // error prefix
+    if (filesysToolkit === null) throw Error(`${ep
+        } filesysToolkit is null`);
+    if (typeof filesysToolkit !== 'object') throw Error(`${ep
+        } filesysToolkit is type '${typeof filesysToolkit}' not 'object'`);
+    if (Object.keys(filesysToolkit).length !== 4) throw Error(`${ep
+        } ${Object.keys(filesysToolkit).length} not 4 props in filesysToolkit`);
+    const { tmpdir, join, mkdtempSync, rmSync } = filesysToolkit;
     if (typeof tmpdir !== 'function') throw Error(`${ep
         } tmpdir is type '${typeof tmpdir}' not 'function'`);
     if (typeof join !== 'function') throw Error(`${ep
@@ -63,7 +68,7 @@ export default function checkTmpDirectory(
                 const rmSyncResult = rmSync(fullPath, { recursive: true });
                 if (typeof rmSyncResult !== 'undefined') throw Error(
                     `Returned type '${typeof rmSyncResult}' not 'undefined'`);
-                    }
+            }
         } catch (e) { throw Error(`${ep} rmSync():\n` +
             `    An error has occurred while removing the temporary folder\n` + 
             `    '${fullPath}'\n` +
@@ -71,6 +76,4 @@ export default function checkTmpDirectory(
             `    ${e}`);
         }
     }
-
-    return '';
 }
